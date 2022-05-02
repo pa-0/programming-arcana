@@ -9,3 +9,6 @@ The guiding principles are:
 - Focus on procedural programming initially, with a view to transitioning to objects
 - Build programs that make it easy to see what is happening in the code
 
+# Contribution
+You can contribute to this project following this [Guide](/CONTRIBUTING.md).
+
