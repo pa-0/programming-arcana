@@ -1,4 +1,4 @@
-name: Check code format
+name: Check-Code and Build
 permissions: write-all
 env:
   GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
