@@ -1,0 +1,36 @@
+name: Check code format
+permissions: write-all
+env:
+  GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: install clang-format
+        run: |
+          sudo apt update
+          sudo apt install -y clang-format
+      - name: checkout repository content
+        uses: actions/checkout@v3
+      - name: setup python
+        uses: actions/setup-python@v3
+      - name: clang format check
+        run: ./script/run-clang-format.py -rl .
+        continue-on-error: true
+      - name: latexmk-action
+        uses: yegor256/latexmk-action@0.8.0
+        with:
+          opts: -pdf     
+      - name: Create Release
+        shell: pwsh
+        run: |
+          $bookdir = New-Item -Path ${{github.WORKSPACE}} -Name build -ItemType 'directory'
+          Get-ChildItem . -Filter "*.pdf" | ForEach-Object {
+            Move-Item "$_" -DestinationPath "$bookdir" 
+          }
+          $book = Compress-Archive -Path $bookdir -DestinationPath "ProgArcana.zip"
+          gh release create v3.0 -n "Just a mirror" -t "Programming-Arcana-v3.0.zip"  $book
+        
